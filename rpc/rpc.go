@@ -34,8 +34,6 @@ func DecodeMessage(msg []byte) (string, []byte, error) {
     return "", nil, err
   }
 
-  _ = content
-
   var baseMessage BaseMessage
   if err := json.Unmarshal(content[:contentLength], &baseMessage); err != nil {
     return "", nil, err
