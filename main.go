@@ -12,6 +12,10 @@ import (
 	"os"
 )
 
+const colorRed = "\033[0;91m"
+const colorNone = "\033[0m"
+const colorGreen = "\033[0;92m"
+
 func main() {
 	logger := getLogger("/Users/adrianbrady/Workspace/Projects/educationalsp/log.txt")
 	logger.Println("Hey, I started")
@@ -35,7 +39,7 @@ func main() {
 }
 
 func handleMessage(logger *log.Logger, writer io.Writer, state analysis.State, method string, contents []byte) {
-	logger.Printf("Received message with method: %s", method)
+	logger.Printf("Received message with method: %s%s%s", colorGreen, method, colorNone)
 
 	switch method {
 	case "initialize":
