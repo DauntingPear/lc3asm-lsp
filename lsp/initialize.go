@@ -9,9 +9,15 @@ type InitializeRequestParams struct {
 	ClientInfo *ClientInfo `json:"clientinfo"`
 	// processID: integer | null
 	// locale?: string
-	// capabilities: clientCapabilities
+	ClientCapabilities map[string]interface{} `json:"capabilities"`
 	// trace?: traceValue;
 	// workspaceFolders?: WorkspaceFolder[] | null;
+	WorkspaceFolders []WorkspaceFolder `json:"workspaceFolders"`
+}
+
+type WorkspaceFolder struct {
+	URI  string `json:"uri"`
+	Name string `json:"name"`
 }
 
 type ClientInfo struct {

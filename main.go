@@ -45,9 +45,17 @@ func handleMessage(logger *log.Logger, writer io.Writer, state analysis.State, m
 			return
 		}
 
+		logger.Printf("\n\nParams:\n%s\n\n", request.Params.ClientCapabilities)
 		logger.Printf("Connected to: %s %s",
 			request.Params.ClientInfo.Name,
 			request.Params.ClientInfo.Version)
+
+		logger.Printf("WorkspaceFolders: %s", request.Params.WorkspaceFolders)
+
+		for _, folder := range request.Params.WorkspaceFolders {
+
+			logger.Printf("- Folder: %s", folder.Name)
+		}
 
 		msg := lsp.NewInitializeResponse(request.ID)
 
