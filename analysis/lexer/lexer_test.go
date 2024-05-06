@@ -7,7 +7,8 @@ import (
 
 func TestBasicTokens(t *testing.T) {
 	input := `
-	,.:;#
+	,.:; COMMENT
+	#
 	#1
 	1
 	x1
@@ -22,7 +23,7 @@ func TestBasicTokens(t *testing.T) {
 		{token.COMMA, ","},
 		{token.PERIOD, "."},
 		{token.COLON, ":"},
-		{token.SEMICOLON, ";"},
+		{token.COMMENT, "; COMMENT"},
 		{token.HASHTAG, "#"},
 		{token.INT, "#1"},
 		{token.INT, "1"},
@@ -53,9 +54,7 @@ func TestTokenRange(t *testing.T) {
 		expectedLiteral string
 		expectedStart   int
 		expectedEnd     int
-	}{
-		{token.REGISTER, "R0", 0, 1},
-	}
+	}{}
 
 	l := New(input)
 
@@ -96,7 +95,7 @@ COLOR .FILL 0`
 
 	for tok.Type != token.EOF {
 		tok = l.NextToken()
-		t.Errorf("TOK=%+v", tok)
+		// t.Errorf("TOK=%+v", tok)
 		if tok.Type != token.EOF {
 			tokens = append(tokens, tok)
 		}

@@ -32,6 +32,8 @@ const (
 	OPCODE    = "OPCODE"
 	DIRECTIVE = "DIRECTIVE"
 	TRAP      = "TRAP"
+
+	COMMENT = "COMMENT"
 )
 
 var opcodes = map[string]TokenType{

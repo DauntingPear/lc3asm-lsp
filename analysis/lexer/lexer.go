@@ -53,7 +53,12 @@ func (l *Lexer) NextToken() token.Token {
 	case ':':
 		tok = newToken(token.COLON, l)
 	case ';':
-		tok = newToken(token.SEMICOLON, l)
+		tok.Type = token.COMMENT
+		tok.Line = l.line
+		tok.Literal = l.readLine()
+		tok.End = l.position
+		tok.LineEnd = tok.LineStart + l.position - l.oldPosition - 1
+		return tok
 	case '#':
 		fmt.Printf("CASE #\n")
 		if isDigit(l.peekChar()) {
@@ -180,6 +185,16 @@ func (l *Lexer) readNumber() string {
 	return l.input[position:l.position]
 }
 
+func (l *Lexer) readLine() string {
+	position := l.position
+
+	for !isNewline(l.ch) {
+		fmt.Printf("char: %c\n", l.ch)
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
 func (l *Lexer) skipWhitespace() {
 	for l.ch == '\n' || l.ch == ' ' || l.ch == '\t' || l.ch == '\r' {
 		// if l.ch == '\n' {
@@ -205,6 +220,16 @@ func (l *Lexer) peekChars(lookAhead int) byte {
 		return l.input[l.readPosition+lookAhead]
 	}
 
+}
+
+func (l *Lexer) prevChar() byte {
+	fmt.Printf("POS=%d", l.position)
+	if l.position <= 0 {
+		return 0
+	} else {
+		fmt.Printf(", CHAR='%c'\n", l.input[l.position-1])
+		return l.input[l.position-1]
+	}
 }
 
 func (l *Lexer) GetPosition() int {
