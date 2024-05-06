@@ -142,6 +142,10 @@ func isNewline(ch byte) bool {
 	return ch == '\n' || ch == '\r'
 }
 
+func isHex(ch byte) bool {
+	return '0' <= ch && ch <= '9' || 'A' <= ch && ch <= 'F'
+}
+
 func (l *Lexer) readRegister() string {
 	position := l.position
 	l.readChar()
@@ -165,7 +169,7 @@ func (l *Lexer) readHex() string {
 		l.readChar()
 	}
 
-	for isDigit(l.ch) {
+	for isHex(l.ch) {
 		l.readChar()
 	}
 	return l.input[position:l.position]
