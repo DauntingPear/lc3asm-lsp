@@ -1,16 +1,23 @@
 package analysis
 
 import (
+	"educationalsp/analysis/lexer"
+	"educationalsp/analysis/token"
 	"educationalsp/lsp"
 	"fmt"
 )
 
 type State struct {
 	Documents map[string]string
+	Lexer     *lexer.Lexer
 }
 
 func NewState() State {
-	return State{Documents: map[string]string{}}
+	l := lexer.New("")
+	return State{
+		Documents: map[string]string{},
+		Lexer:     l,
+	}
 }
 
 func (s *State) OpenDocument(uri, text string) {
@@ -48,7 +55,27 @@ func (s *State) Definition(id int, uri string, position lsp.Position) lsp.Defini
 func (s *State) Hover(id int, uri string, position lsp.Position) lsp.HoverResponse {
 	// in a real LSP, this would look up the type in our type analysis code
 
+	// HACK: Inefficient, lexes over whole document each request
 	document := s.Documents[uri]
+	// pos := position.Character
+	s.Lexer = lexer.New(document)
+	tokens := []token.Token{}
+	var tok token.Token
+	line := position.Line
+	character := position.Character
+
+	for tok.Type != token.EOF {
+		tok = s.Lexer.NextToken()
+		if tok.Type != token.EOF {
+			tokens = append(tokens, tok)
+		}
+	}
+
+	for _, token := range tokens {
+		if line == token.Line && token.LineStart <= character && token.LineEnd >= character {
+			tok = token
+		}
+	}
 
 	return lsp.HoverResponse{
 		Response: lsp.Response{
@@ -56,7 +83,8 @@ func (s *State) Hover(id int, uri string, position lsp.Position) lsp.HoverRespon
 			ID:  &id,
 		},
 		Result: lsp.HoverResult{
-			Contents: fmt.Sprintf("File: %s, Characters: %d", uri, len(document)),
+			// Contents: fmt.Sprintf("Line=%d, Char=%d\n", position.Line, position.Character),
+			Contents: fmt.Sprintf("Token:\n- Type: %q\n- Literal: %s\n- Token Line: %d\n  - Start: %d\n  - End: %d\nLSP:\n- Request Line: %d\n- Request Index: %d", tok.Type, tok.Literal, tok.Line, tok.LineStart, tok.LineEnd, line, character),
 		},
 	}
 }

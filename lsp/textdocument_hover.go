@@ -17,3 +17,5 @@ type HoverResponse struct {
 type HoverResult struct {
 	Contents string `json:"contents"`
 }
+
+type MarkedString string
