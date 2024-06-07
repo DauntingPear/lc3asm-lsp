@@ -1,2 +1,1 @@
-GO LSP by TJ
-Educational Tutorial
+LSP for the Little Computer 3 assembly standard
